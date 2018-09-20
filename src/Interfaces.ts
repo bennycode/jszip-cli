@@ -1,5 +1,6 @@
 interface CLIOptions {
   compressionLevel?: number;
+  configFile?: string | boolean;
   dereferenceLinks?: boolean;
   force?: boolean;
   ignoreEntries?: string[];

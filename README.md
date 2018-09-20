@@ -15,7 +15,8 @@ A zip CLI based on jszip.
 
 Options:
 
-  -v, --version                      output the version number
+  --noconfig                         don't look for a configuration file
+  -c, --config <path>                use a configuration file (default: .jsziprc.json)
   -o, --output <dir>                 set the output directory (default: stdout)
   -i, --ignore <entry>               ignore a file or directory
   -f, --force                        force overwriting files and directories (default: false)
@@ -23,12 +24,13 @@ Options:
   -l, --level <number>               set the compression level (default: 5)
   -V, --verbose                      enable verbose logging (default: false)
   -q, --quiet                        Don't log anything (default: false)
+  -v, --version                      output the version number
   -h, --help                         output usage information
 
 Commands:
 
-  add|a [options] <entries...>       add files and directories to a new ZIP archive
-  extract|e [options] [archives...]  extract files and directories from ZIP archive(s)
+  add|a [options] [entries...]       add files and directories to a new ZIP archive
+  extract|e [options] <archives...>  extract files and directories from ZIP archive(s)
 ```
 
 ## Examples

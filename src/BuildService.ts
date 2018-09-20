@@ -102,7 +102,7 @@ class BuildService {
       fileStat = await fs.lstat(resolvedPath);
     } catch (error) {
       if (!this.options.quiet) {
-        console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+        console.info(`Can't read file "${entry.resolvedPath}". Ignoring.`);
       }
       this.logger.info(error);
       return;
@@ -129,7 +129,7 @@ class BuildService {
         realPath = await fs.realpath(resolvedPath);
       } catch (error) {
         if (!this.options.quiet) {
-          console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+          console.info(`Can't read link "${entry.resolvedPath}". Ignoring.`);
         }
         this.logger.info(error);
         return;
@@ -150,7 +150,7 @@ class BuildService {
       fileStat = await fs.lstat(entry.resolvedPath);
     } catch (error) {
       if (!this.options.quiet) {
-        console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+        console.info(`Can't read file "${entry.resolvedPath}". Ignoring.`);
       }
       this.logger.info(error);
       return;
@@ -178,7 +178,7 @@ class BuildService {
     } else {
       this.logger.info(`Unknown file type.`, {fileStat});
       if (!this.options.quiet) {
-        console.info(`Can't read "${entry.resolvedPath}". Ignoring.`);
+        console.info(`Can't read file "${entry.resolvedPath}". Ignoring.`);
       }
     }
   }
