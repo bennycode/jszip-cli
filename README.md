@@ -33,6 +33,10 @@ Commands:
   extract|e [options] <archives...>  extract files and directories from ZIP archive(s)
 ```
 
+### Config file
+Every option from the CLI can be specified as config file in JSON or JavaScript format.
+Please refer to the [JSON example](./.jsziprc.example.json) and the [JavaScript example](./.jsziprc.example.js).
+
 ## Examples
 
 ```

@@ -20,35 +20,37 @@ export class JSZipCLI {
   private readonly buildService: BuildService;
   private readonly extractService: ExtractService;
   private readonly logger: logdown.Logger;
+  private configOptions?: CLIOptions;
   private mode?: string;
   private options: Required<CLIOptions>;
   private rawEntries?: string[];
+  private terminalOptions: CLIOptions;
 
   constructor(options: CLIOptions = defaultOptions) {
-    this.options = {...defaultOptions, ...options};
+    this.terminalOptions = options;
     this.logger = logdown('jszip-cli/index', {
       logger: console,
       markdown: false,
     });
-    this.logger.state = {isEnabled: this.options.verbose};
 
-    if (typeof this.options.configFile === 'string') {
-      console.log('config file is a string');
-      this.readConfigFile();
-    } else if (this.options.configFile === true) {
-      this.options.configFile = '.jsziprc.json';
-      this.readConfigFile(true);
+    if (typeof this.terminalOptions.configFile === 'string') {
+      this.readConfigFile(this.terminalOptions.configFile);
+    } else if (this.terminalOptions.configFile === true) {
+      this.readConfigFile('.jsziprc.json', true);
     } else {
       this.logger.info('Not using any configuration file.');
     }
+
+    this.options = {...defaultOptions, ...this.configOptions, ...this.terminalOptions};
+    this.logger.state = {isEnabled: this.options.verbose};
 
     this.buildService = new BuildService(this.options);
     this.extractService = new ExtractService(this.options);
   }
 
-  private readConfigFile(loose = false): void {
-    const resolvedDir = path.resolve(this.options.configFile as string);
-    this.options.configFile = resolvedDir;
+  private readConfigFile(configFile: string, loose = false): void {
+    const resolvedDir = path.resolve(configFile);
+    configFile = resolvedDir;
     try {
       fs.accessSync(resolvedDir, fs.constants.F_OK | fs.constants.R_OK);
     } catch (error) {
@@ -63,8 +65,8 @@ export class JSZipCLI {
 
     try {
       const configFileData = require(resolvedDir);
-      console.log(configFileData);
       if (configFileData.entries) {
+        console.log(configFileData.entries)
         this.rawEntries = configFileData.entries;
         delete configFileData.entries;
       }
@@ -72,7 +74,7 @@ export class JSZipCLI {
         this.mode = configFileData.mode;
         delete configFileData.mode;
       }
-      this.options = {...this.options, ...configFileData};
+      this.configOptions = configFileData;
       return;
     } catch (error) {
       throw new Error(`Malformed JSON configuration file "${resolvedDir}".`);
@@ -80,7 +82,7 @@ export class JSZipCLI {
   }
 
   public add(rawEntries?: string[]): BuildService {
-    if (!rawEntries) {
+    if (!rawEntries || !rawEntries.length) {
       if (this.rawEntries) {
         rawEntries = this.rawEntries;
       } else {
@@ -91,7 +93,7 @@ export class JSZipCLI {
   }
 
   public extract(rawEntries?: string[]): Promise<ExtractService> {
-    if (!rawEntries) {
+    if (!rawEntries || !rawEntries.length) {
       if (this.rawEntries) {
         rawEntries = this.rawEntries;
       } else {
